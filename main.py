@@ -35,6 +35,47 @@ def tratar_categoria(texto_limpo: str) -> str: # preenche categorias vazias com 
     else:
         return texto_limpo
 
+# tratando dimensões fisicas
+def tratar_dimensao_fisica(tamanho: str) -> str: # Trata e valida a dimensão física/tamanho do produto (ex.: P, M, G, Unico), se estiver vazio é marcado como "Não Informado" sem inventar medidas.
+    tamanho_limpo = tamanho.strip()
+    if tamanho_limpo == "":
+        return "não informado"
+    else:
+        return tamanho_limpo
+
+# Verifica se a quantidade é um número inteiro válido e positivo (> 0). Pedidos com quantidade zero ou negativa representam inconsistência de registro.
+def validar_quantidade(texto: str) -> bool: 
+    try:
+        qtd = int(texto)
+        if qtd > 0:
+            return True
+        else:
+            return False
+    except ValueError: 
+        return False
+
+# Valida se o preço unitário está presente e não é negativo (>= 0.0)
+def validar_preco(texto: str) -> bool:
+    preco_limpo = texto.strip()
+    if preco_limpo == "":
+        return False
+    try:
+        valor = float(preco_limpo)
+        if valor >= 0.0:
+            return True
+        else:
+            return False
+    except ValueError:
+        return False
+
+# Converte a string 'data_venda' usando datetime.strptime no padrão 'AAAA-MM-DD HH:MM:SS'
+# O try/except captura datas corrompidas retornando None, evitando a interrupção do programa e impedindo a substituição indevida pela data atual.
+def converter_data_venda(texto: str) -> datetime | None:
+    try:
+        return datetime.strptime(texto.strip(), "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return None
+    
 # Ponto de entrada do script
 if __name__ == "__main__":
     dados = carregar_dados("halloween_vendas.csv")
